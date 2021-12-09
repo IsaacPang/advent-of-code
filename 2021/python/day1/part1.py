@@ -1,6 +1,6 @@
 from pathlib import Path
 
-path_to_file = Path("../../docs/day1/part1.dat")
+path_to_file = Path("../../docs/day1/data.dat")
 
 with open(path_to_file, 'r') as file:
     ref_data = next(file).strip('\n')
