@@ -29,10 +29,10 @@ def get_line(start: Coordinate, end: Coordinate) -> list[Coordinate]:
     Only works for vertical and horizontal lines only"""
     horz1, vert1 = start
     horz2, vert2 = end
-    between_horz = range(min(horz1, horz2), max(horz1, horz2) + 1)
-    between_vert = range(min(vert1, vert2), max(vert1, vert2) + 1)
 
     if horz1 == horz2 or vert1 == vert2:
+        between_horz = range(min(horz1, horz2), max(horz1, horz2) + 1)
+        between_vert = range(min(vert1, vert2), max(vert1, vert2) + 1)
         return [(x, y) for x in between_horz for y in between_vert]
     return []
 
@@ -44,7 +44,6 @@ def main():
     with open(path_to_file, "r") as file:
         straight_lines = []
         for pair in parse_file(file):
-            print(pair)
             straight_lines += get_line(*pair)
 
     positions = Counter(straight_lines)
