@@ -3,10 +3,55 @@ Module to solve part 2 of day 5 advent of code 2021.
 """
 from pathlib import Path
 from os import chdir
+from typing import Generator, TextIO
+from collections import Counter
+
+
+# defining the coordinate type
+Coordinate = tuple[int]
+
+
+def parse_coord(coord: str) -> Coordinate:
+    """Parses the string coordinates into integer tuples."""
+    return tuple(int(val) for val in coord.strip().split(","))
+
+
+def parse_file(file: TextIO) -> Generator:
+    """Returns line by line of file"""
+    for line in file:
+        yield tuple(
+            parse_coord(coordinate) for coordinate in line.strip("\n").split(" -> ")
+        )
+
+
+def get_line(start: Coordinate, end: Coordinate) -> list[Coordinate]:
+    """Returns a list of all coordinates between two coordinates."""
+    horz1, vert1 = start
+    horz2, vert2 = end
+
+    between_horz = range(min(horz1, horz2), max(horz1, horz2) + 1)
+    between_vert = range(min(vert1, vert2), max(vert1, vert2) + 1)
+    if horz1 == horz2 or vert1 == vert2:
+        return [(x, y) for x in between_horz for y in between_vert]
+
+    if (horz1 < horz2 and vert1 < vert2) or (horz1 > horz2 and vert1 > vert2):
+        return [(x, min(vert1, vert2) + index) for index, x in enumerate(between_horz)]
+
+    return [(x, max(vert1, vert2) - index) for index, x in enumerate(between_horz)]
 
 
 def main():
     """Main function."""
+    path_to_file = Path("../../docs/day5/data.dat")
+    # path_to_file = Path("../../docs/day5/test.dat")
+    with open(path_to_file, "r") as file:
+        lines = []
+        for pair in parse_file(file):
+            lines += get_line(*pair)
+
+    positions = Counter(lines)
+
+    print(sum(vals > 1 for vals in positions.values()))
 
 
 if __name__ == "__main__":
