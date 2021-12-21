@@ -1,8 +1,9 @@
 """
 Module to solve part 2 of day 6 advent of code 2021.
 """
-from pathlib import Path
 from os import chdir
+from collections import Counter
+from pathlib import Path
 
 
 def decrease_one(value: int) -> int:
@@ -16,20 +17,19 @@ def main():
     with open(path_to_file, "r") as file:
         fishes = [int(value) for value in file.read().strip("\n").split(",")]
 
-    days_after = 0
-    fishes_to_add = []
-    while days_after < 80:
-        fishes += fishes_to_add
-        fishes_to_add = []
-        fishes = [decrease_one(fish) for fish in fishes]
-        for index, fish in enumerate(fishes):
-            if fish == 0:
-                fishes[index] = 7
-                fishes_to_add.append(9)
-        days_after += 1
+    fish_counter = dict(Counter(fishes))
 
-    print(len(fishes))
+    max_day = 256
+    for day in range(max_day):
+        zero_count_fish = fish_counter.get(0,0)
+        fish_counter[0] = fish_counter[1]
+        for count in range(1, 8):
+            fish_counter[count] = fish_counter.get(count + 1, 0)
 
+        fish_counter[6] += zero_count_fish
+        fish_counter[8] = zero_count_fish
+
+    print(sum(fish_counter.values()))
 
 if __name__ == "__main__":
     EXEC_FILEPATH = str(Path(__file__))
